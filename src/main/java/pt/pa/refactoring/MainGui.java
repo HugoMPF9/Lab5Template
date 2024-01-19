@@ -13,6 +13,9 @@ import javafx.stage.Stage;
 import pt.pa.refactoring.model.Review;
 import pt.pa.refactoring.model.Reviews;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * @author amfs
  */
@@ -22,6 +25,55 @@ public class MainGui extends Application {
         launch(args);
     }
 
+    private GridPane createForm(String title, List<LabelValue> labelValues) {
+        GridPane form = new GridPane();
+        Label labelTitle = new Label(title);
+        labelTitle.setStyle("-fx-font-weight: bold");
+        form.add(labelTitle, 0, 0);
+        for (int i = 0; i < labelValues.size(); i++) {
+            Label label = new Label(labelValues.get(i).getLabel());
+            form.add(label, 0, i + 1);
+            TextField textField = new TextField();
+            form.add(textField, 1, i + 1);
+        }
+        return form;
+    }
+
+    private class LabelValue {
+        private String label;
+        private String value;
+
+        public LabelValue(String label, String value) {
+            this.label = label;
+            this.value = value;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Review Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
     @Override
     public void start(Stage stage) throws Exception {
         Reviews reviews = new Reviews();
@@ -30,75 +82,44 @@ public class MainGui extends Application {
         BorderPane borderPane = new BorderPane();
 
         Scene scene = new Scene(borderPane,700,600);
-        
-        //Product image view
-        Image image = new Image("laptop.jpg");
+
+        // Create the product image
+        Image image = new Image("product.jpg");
         ImageView imageView = new ImageView(image);
-        
-        // Product grid pane
+
+        // Create the product description grid pane
         GridPane productDescriptionGridPane = new GridPane();
+        productDescriptionGridPane.add(new Label("Product name:"), 0, 0);
+        productDescriptionGridPane.add(new Label("Release date:"), 0, 1);
+        productDescriptionGridPane.add(new Label("CPU:"), 0, 2);
+        productDescriptionGridPane.add(new Label("RAM:"), 0, 3);
+        productDescriptionGridPane.add(new Label("Storage:"), 0, 4);
+        productDescriptionGridPane.add(new Label("Weight:"), 0, 5);
+        productDescriptionGridPane.add(new Label("Battery:"), 0, 6);
+        productDescriptionGridPane.add(new Label("Portátil XPTO"), 1, 0);
+        productDescriptionGridPane.add(new Label("January de 2022"), 1, 1);
+        productDescriptionGridPane.add(new Label("Intel Core i7 @ 3.00GHz"), 1, 2);
+        productDescriptionGridPane.add(new Label("16GB"), 1, 3);
+        productDescriptionGridPane.add(new Label("1TB SSD NVMe M.2"), 1, 4);
+        productDescriptionGridPane.add(new Label("1.3kg"), 1, 5);
+        productDescriptionGridPane.add(new Label("65Wh"), 1, 6);
 
-        Label labelProductName = new Label("Product: ");
-        labelProductName.setStyle("-fx-font-weight: bold");
-        Label productName = new Label("Portátil XPTO");
-        Label labelReleaseDate = new Label("Launch date: ");
-        labelReleaseDate.setStyle("-fx-font-weight: bold");
-        Label releaseDate = new Label("January de 2022");
-        Label labelCPU = new Label("CPU: ");
-        labelCPU.setStyle("-fx-font-weight: bold");
-        Label cpu = new Label("Intel Core i7 @ 3.00GHz");
-        Label labelRAM = new Label("RAM: ");
-        labelRAM.setStyle("-fx-font-weight: bold");
-        Label ram = new Label("16GB");
-        Label labelStorage = new Label("Storage: ");
-        labelStorage.setStyle("-fx-font-weight: bold");
-        Label storage = new Label("1TB SSD NVMe M.2");
-        Label labelWeight = new Label("Weight: ");
-        labelWeight.setStyle("-fx-font-weight: bold");
-        Label weight = new Label("1.3kg");
-        Label labelBattery = new Label("Battery: ");
-        labelBattery.setStyle("-fx-font-weight: bold");
-        Label battery = new Label("65Wh");
-
-        productDescriptionGridPane.add(labelProductName, 0, 0);
-        productDescriptionGridPane.add(productName, 1,0);
-        productDescriptionGridPane.add(labelReleaseDate, 0, 1);
-        productDescriptionGridPane.add(releaseDate, 1,1);
-        productDescriptionGridPane.add(labelCPU, 0, 2);
-        productDescriptionGridPane.add(cpu, 1,2);
-        productDescriptionGridPane.add(labelRAM, 0, 3);
-        productDescriptionGridPane.add(ram, 1,3);
-        productDescriptionGridPane.add(labelStorage, 0, 4);
-        productDescriptionGridPane.add(storage, 1, 4);
-        productDescriptionGridPane.add(labelWeight, 0,5);
-        productDescriptionGridPane.add(weight, 1, 5);
-        productDescriptionGridPane.add(labelBattery, 0,6);
-        productDescriptionGridPane.add(battery, 1,6);
-
-        // Review form
-        GridPane gridPaneAddReview = new GridPane();
-
-        Label labelAddReview = new Label("Add your review");
-        labelAddReview.setStyle("-fx-font-weight: bold");
-        gridPaneAddReview.add(labelAddReview, 0, 0);
-
-        gridPaneAddReview.add(new Label("Your name"), 0, 1);
+        GridPane reviewFormGridPane = new GridPane();
+        reviewFormGridPane.add(new Label("Your name:"), 0, 0);
+        reviewFormGridPane.add(new Label("Text:"), 0, 1);
+        reviewFormGridPane.add(new Label("Rating (0 to 5):"), 0, 2);
         TextField textFieldName = new TextField();
-        gridPaneAddReview.add(textFieldName, 1, 1);
-
-        gridPaneAddReview.add(new Label("Text"), 0, 2);
+        reviewFormGridPane.add(textFieldName, 1, 0);
         TextField textFieldText = new TextField();
-        gridPaneAddReview.add(textFieldText, 1, 2);
-
-        gridPaneAddReview.add(new Label("Rating (0 to 5)"), 0, 3);
+        reviewFormGridPane.add(new TextField(),1,1);
         TextField textFieldRating = new TextField();
-        gridPaneAddReview.add(textFieldRating, 1, 3);
-        Button buttonAddReview = new Button("Add");
+        reviewFormGridPane.add(new TextField(),1,2);
 
-        gridPaneAddReview.add(buttonAddReview, 1, 4);
+        Button buttonAddReview = new Button("Add");
+        reviewFormGridPane.add(buttonAddReview, 1, 4);
 
         HBox hBoxProduct = new HBox(5);
-        hBoxProduct.getChildren().addAll(imageView, productDescriptionGridPane, gridPaneAddReview);
+        hBoxProduct.getChildren().addAll(imageView, productDescriptionGridPane, reviewFormGridPane);
         
         borderPane.setTop(hBoxProduct);
 
@@ -115,24 +136,15 @@ public class MainGui extends Application {
 
         buttonAddReview.setOnAction((ActionEvent e) -> {
             if (textFieldName.getText().isEmpty() || textFieldRating.getText().isEmpty() || textFieldText.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Review Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Empty fields");
-                alert.showAndWait();
-            } else
-            {
+                showErrorAlert("Empty fields");
+            } else {
                 try {
                     String name = textFieldName.getText();
                     String text = textFieldText.getText();
                     double rating = Double.parseDouble(textFieldRating.getText());
 
                     if (rating < 0 || rating > 5) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Review Error");
-                        alert.setHeaderText(null);
-                        alert.setContentText("Invalid rating");
-                        alert.showAndWait();
+                        showErrorAlert("Invalid rating");
                         return;
                     }
 
@@ -145,11 +157,7 @@ public class MainGui extends Application {
                     textFieldRating.clear();
                     labelReviewsList.setText(String.format("Reviews list (%d) . Average rating (%.1f)", reviews.getTotal(), reviews.getAvgRating()));
                 } catch (NumberFormatException nfe) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Review Error");
-                    alert.setHeaderText(null);
-                    alert.setContentText("invalid format");
-                    alert.showAndWait();
+                    showErrorAlert("invalid format");
                 }
             }
         });
